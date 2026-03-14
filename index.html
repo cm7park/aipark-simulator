@@ -36,7 +36,7 @@ body{background:#e8eaed;padding:1rem;font-family:'Pretendard',system-ui,sans-ser
 /* TOP KPIs */
 .krow5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:16px;}
 .kc{background:var(--bg1);border:1px solid var(--bx);border-radius:10px;padding:12px 13px;transition:background .25s,border-color .25s;}
-.kc-l{font-size:12px;color:var(--cs);margin-bottom:4px;display:flex;align-items:center;gap:3px;}
+.kc-l{font-size:11px;color:var(--cs);margin-bottom:4px;display:flex;align-items:center;gap:3px;white-space:nowrap;overflow:hidden;}
 .kc-v{font-size:17px;font-weight:600;letter-spacing:-.3px;}
 .badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:12px;font-weight:600;margin-top:3px;}
 /* ACTUAL DATA BANNER */
@@ -110,8 +110,8 @@ tr.tr-actual td{background:rgba(0,150,100,.04);}
 /* COMPARISON */
 .comp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:12px;}
 .ach-row{display:flex;align-items:center;gap:7px;margin-bottom:7px;font-size:13px;}
-.ach-label{width:80px;flex-shrink:0;color:var(--cs);}
-.ach-bar-wrap{flex:1;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.ach-label{width:100px;flex-shrink:0;color:var(--cs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ach-bar-wrap{flex:1;min-width:60px;height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
 .ach-bar{height:100%;border-radius:3px;transition:width .3s;}
 /* PIPELINE */
 .pipe-grid{display:grid;gap:7px;}
@@ -314,7 +314,7 @@ const TIPS={
   conv:{h:'전환율 — Conversion Rate',d:'리드(잠재고객)가 유료 고객으로 전환되는 비율.',i:'<b>기준:</b> PLG 모델 3~5%, 영업 지원 모델 15~30%.'},
   cac:{h:'CAC — Customer Acquisition Cost',d:'고객 1명 획득 비용.',i:'<b>전략:</b> V-GEN API는 CAC 대비 LTV가 매우 높음. 이 채널에 마케팅 집중 권장.'},
   ltv:{h:'LTV — Lifetime Value',d:'고객 1명이 이탈 전까지 기여하는 총 예상 매출.',i:'<b>해석:</b> 이탈률이 분모라 이탈률을 조금만 낮춰도 LTV가 크게 상승.'},
-  ltvcac:{h:'LTV:CAC 비율',d:'생애 가치 대비 획득 비용 비율. SaaS 건강도 핵심.',i:'<b>기준:</b> 1x 미만 적자 / 1~3x 개선 필요 / <b>3x 이상 건강</b> / 5x 이상 성장 가속'},
+  ltvcac:{h:'LTV:CAC 비율',d:'생애 가치 대비 획득 비용 비율. SaaS 건강도 핵심.',i:'<b>기준:</b> 1x 미만 적자 / 1~3x 개선 필요 / <b>3~10x 건강</b> / 10x 이상 성장 가속'},
   payback:{h:'Payback Period — 투자 회수 기간',d:'CAC를 월 ARPU로 회수하는 기간.',i:'<b>기준:</b> 12개월 이하 우수, 18개월 이하 양호.'},
   bep:{h:'BEP — Break-Even Point',d:'누적 매출이 고정비를 처음 초과하는 시점.',i:'<b>전략:</b> 고정비 유지 + MRR 빠른 성장 = BEP 앞당기기 공식.'},
   mrr_g:{h:'MRR 성장률',d:'현재 MRR 대비 12개월 후 MRR 증감률.',i:'<b>현황:</b> 1월→2월 MRR이 감소했습니다. 시뮬레이션 변수에서 실제 전환율/이탈률로 맞춰보세요.'},
@@ -345,13 +345,13 @@ let REAL = {
     {month:2, total_mrr:1182, customers:8, new_cust:3, churn_cust:3, arpu:148, churn_rate:37.5},
   ],
   streams: {
-    saas:    {annual_target:2500, q1_target:375,  q1_actual:0,    annual_actual:0},
-    vgen:    {annual_target:600,  q1_target:90,   q1_actual:126,  annual_actual:126},
-    ent:     {annual_target:2500, q1_target:750,  q1_actual:229,  annual_actual:229},
-    vid:     {annual_target:2500, q1_target:375,  q1_actual:33,   annual_actual:33},
-    custom:  {annual_target:2000, q1_target:300,  q1_actual:247,  annual_actual:247},
-    public:  {annual_target:4000, q1_target:1000, q1_actual:0,    annual_actual:0},
-    bizcard: {annual_target:900,  q1_target:135,  q1_actual:0,    annual_actual:0},
+    saas:    {annual_target:25000, q1_target:3750,  q1_actual:0,    annual_actual:0},
+    vgen:    {annual_target:6000,  q1_target:900,   q1_actual:1261, annual_actual:1261},
+    ent:     {annual_target:25000, q1_target:7500,  q1_actual:2229, annual_actual:20858},
+    vid:     {annual_target:25000, q1_target:3750,  q1_actual:330,  annual_actual:330},
+    custom:  {annual_target:20000, q1_target:3000,  q1_actual:2466, annual_actual:2466},
+    public:  {annual_target:40000, q1_target:10000, q1_actual:0,    annual_actual:0},
+    bizcard: {annual_target:9000,  q1_target:1350,  q1_actual:0,    annual_actual:0},
   },
   pipeline: [
     {stream:'공공혁신제품', client:'국방홍보원', amount:12000, service:'Aivatar Enterprise'},
@@ -370,16 +370,16 @@ let REAL = {
     {stream:'디지털명함', client:'KB손해보험', amount:0, service:'(협의 중)'},
   ],
   last_sync: '2026-03-14 (엑셀 파일 기준)',
-  gs_webapp_url: '' // GS 웹앱 배포 후 여기에 URL 입력
+  gs_webapp_url: 'https://script.google.com/a/macros/aipark.ai/s/AKfycbziNhNW3z5EQZ9Pd1YvG-qw7xyYeCHDysdf-nqbumucACwOboXWLu7OceX6TdHaCDBA/exec' // GS 웹앱 배포 후 여기에 URL 입력
 };
 
 // ── SIM STATE ─────────────────────────────────────────────────────────────
 const S={
-  avCust:8, avLeads:20, avConv:15, avChurn:5, avARPU:148,
-  vgClients:3, vgNew:2, vgChurn:5, vgARPU:126,
-  entContracts:8, entNewQ:3, entAvg:286,
-  vidVol:10, vidGrowth:2, vidPrice:55,
-  fixedCost:2000, cacAv:50, cacVg:100, cacEnt:500, cacVid:30
+  avCust:8, avLeads:20, avConv:15, avChurn:5, avARPU:150,   // step=10에 정렬
+  vgClients:3, vgNew:1, vgChurn:5, vgARPU:140,               // step=10으로 변경
+  entContracts:8, entNewQ:3, entAvg:1100,                    // step=100에 정렬
+  vidVol:2, vidGrowth:1, vidPrice:250,                       // step=1로 변경
+  fixedCost:2000, cacAv:300, cacVg:500, cacEnt:2000, cacVid:100
 };
 const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 const CL=['#00935F','#1A56DB','#7C3AED','#D97706'];
@@ -389,7 +389,7 @@ const SN=['통합 SaaS','V-GEN API','Enterprise','영상제작'];
 const TARGET=150000; // 15억 (만원)
 
 const SP=[
-  [{k:'avCust',l:'현재 유료 고객',ti:null,min:0,max:5000,step:5,u:'명'},
+  [{k:'avCust',l:'현재 유료 고객',ti:null,min:0,max:5000,step:1,u:'명'},
    {k:'avLeads',l:'월 신규 리드',ti:null,min:0,max:3000,step:10,u:'건'},
    {k:'avConv',l:'전환율',ti:'conv',min:0,max:100,step:1,u:'%'},
    {k:'avChurn',l:'월 이탈률',ti:'churn',min:0,max:50,step:1,u:'%'},
@@ -397,18 +397,18 @@ const SP=[
   [{k:'vgClients',l:'현재 클라이언트',ti:null,min:0,max:500,step:1,u:'사'},
    {k:'vgNew',l:'월 신규',ti:null,min:0,max:100,step:1,u:'사'},
    {k:'vgChurn',l:'월 이탈률',ti:'churn',min:0,max:50,step:1,u:'%'},
-   {k:'vgARPU',l:'ARPU (월)',ti:'arpu',min:10,max:5000,step:50,u:'만원'}],
+   {k:'vgARPU',l:'ARPU (월)',ti:'arpu',min:10,max:5000,step:10,u:'만원'}],
   [{k:'entContracts',l:'현재 계약 건수',ti:null,min:0,max:200,step:1,u:'건'},
    {k:'entNewQ',l:'분기 신규 계약',ti:null,min:0,max:30,step:1,u:'건'},
-   {k:'entAvg',l:'평균 계약금액',ti:null,min:100,max:10000,step:100,u:'만원'}],
-  [{k:'vidVol',l:'현재 월 제작편수',ti:null,min:0,max:500,step:5,u:'편'},
+   {k:'entAvg',l:'평균 계약금액 (연간)',ti:null,min:100,max:10000,step:100,u:'만원'}],
+  [{k:'vidVol',l:'현재 월 제작편수',ti:null,min:0,max:500,step:1,u:'편'},
    {k:'vidGrowth',l:'월 증가편수',ti:null,min:0,max:50,step:1,u:'편'},
    {k:'vidPrice',l:'편당 단가',ti:null,min:20,max:500,step:10,u:'만원'}]
 ];
 const CF=[{k:'fixedCost',l:'월 고정비 (인건비+운영)',ti:'bep',min:0,max:20000,step:100,u:'만원'}];
 const CACF=[
-  {k:'cacAv',l:'통합 SaaS CAC',ti:'cac',min:0,max:2000,step:10,u:'만원'},
-  {k:'cacVg',l:'V-GEN API CAC',ti:'cac',min:0,max:5000,step:50,u:'만원'},
+  {k:'cacAv',l:'통합 SaaS CAC',ti:'cac',min:0,max:5000,step:100,u:'만원'},
+  {k:'cacVg',l:'V-GEN API CAC',ti:'cac',min:0,max:10000,step:100,u:'만원'},
   {k:'cacEnt',l:'Enterprise CAC',ti:'cac',min:0,max:20000,step:500,u:'만원'},
   {k:'cacVid',l:'영상제작 CAC',ti:'cac',min:0,max:2000,step:10,u:'만원'}
 ];
@@ -416,7 +416,7 @@ const CACF=[
 let aS=0,scenarios={},bC,pC,ccC,lastSim,lastMrrs,lastMo;
 
 // ── HELPERS ───────────────────────────────────────────────────────────────
-function fmt(w,d=1){if(w===null||isNaN(w)||!isFinite(w))return'—';if(w>=10000)return(w/10000).toFixed(d)+'억원';if(w>=1000)return(w/1000).toFixed(d)+'천만원';return Math.round(w).toLocaleString()+'만원';}
+function fmt(w,d=1){if(w===null||isNaN(w)||!isFinite(w))return'—';if(w>=10000)return(w/10000).toFixed(d)+'억원';return Math.round(w).toLocaleString()+'만원';}
 function fmtPct(v){if(v===null)return'—';return(v>0?'+':'')+v.toFixed(1)+'%';}
 function achColor(pct){return pct>=100?'#00935F':pct>=70?'#D97706':'#DC2626';}
 function achBg(pct){return pct>=100?'rgba(0,150,100,.1)':pct>=70?'rgba(217,119,6,.1)':'rgba(220,38,38,.1)';}
@@ -449,19 +449,33 @@ function update(){
   const latestActual=REAL.monthly_mrr.length?REAL.monthly_mrr[REAL.monthly_mrr.length-1].total_mrr:null;
   const lastM=REAL.monthly_mrr.length?REAL.monthly_mrr[REAL.monthly_mrr.length-1].month-1:0;
   const simAtLastActual=mo[lastM];
-  const vsPct=latestActual&&simAtLastActual?(latestActual/simAtLastActual-1)*100:null;
+  const vsPct=latestActual&&latestActual>0&&simAtLastActual&&simAtLastActual>0?(latestActual/simAtLastActual-1)*100:null;
 
   document.getElementById('top-kpis').innerHTML=`
-    <div class="kc"><div class="kc-l">${ti('mrr','시뮬 MRR (현재)')}</div><div class="kc-v">${fmt(now)}</div></div>
-    <div class="kc"><div class="kc-l">${ti('arr','ARR 환산')}</div><div class="kc-v" style="color:${isDark?'#8B5CF6':'#7C3AED'};">${fmt(m12*12)}</div></div>
-    <div class="kc"><div class="kc-l">12개월 후 MRR</div><div class="kc-v" style="color:${gc};">${fmt(m12)}</div></div>
-    <div class="kc"><div class="kc-l">최근 실적 MRR <span style="font-size:9px;opacity:.6;">(${REAL.last_sync.split(' ')[0]})</span></div>
+    <div class="kc">
+      <div class="kc-l">${ti('mrr','현재 MRR')}<span style="font-size:11px;color:var(--cs);margin-left:4px;">(시뮬)</span></div>
+      <div class="kc-v">${fmt(now)}</div>
+    </div>
+    <div class="kc">
+      <div class="kc-l">${ti('arr','현재 ARR')}<span style="font-size:11px;color:var(--cs);margin-left:4px;">= MRR × 12</span></div>
+      <div class="kc-v" style="color:${isDark?'#8B5CF6':'#7C3AED'};">${fmt(now*12)}</div>
+    </div>
+    <div class="kc">
+      <div class="kc-l">12개월 후 MRR<span style="font-size:11px;color:var(--cs);margin-left:4px;">(예측)</span></div>
+      <div class="kc-v" style="color:${gc};">${fmt(m12)}</div>
+      <div style="font-size:11px;color:var(--cs);margin-top:2px;">ARR 환산 ${fmt(m12*12)}</div>
+    </div>
+    <div class="kc">
+      <div class="kc-l">최근 실적 MRR <span style="font-size:11px;opacity:.6;">(${REAL.last_sync.split(' ')[0]})</span></div>
       <div class="kc-v" style="color:var(--ao);">${latestActual!==null?fmt(latestActual):'—'}
         ${vsPct!==null?`<div><span class="badge" style="background:${vsPct>=0?achBg(100):achBg(0)};color:${vsPct>=0?gc:rc};">시뮬 대비 ${fmtPct(vsPct)}</span></div>`:''}
       </div>
     </div>
-    <div class="kc"><div class="kc-l">${ti('mrr_g','MRR 성장률')}</div><div class="kc-v" style="color:${g>0?gc:rc};">${(g>0?'+':'')+g}%</div>
-      <span class="badge" style="background:${bep?achBg(100):achBg(0)};color:${bep?gc:rc};">${bep?'목표 '+bep+'개월차':'미달성'}</span></div>`;
+    <div class="kc">
+      <div class="kc-l">${ti('mrr_g','MRR 성장률')}</div>
+      <div class="kc-v" style="color:${g>0?gc:rc};">${(g>0?'+':'')+g}%</div>
+      <span class="badge" style="background:${bep?achBg(100):achBg(0)};color:${bep?gc:rc};">${bep?'목표달성 '+bep+'개월차':'목표 미달성'}</span>
+    </div>`;
 
   // 데이터 배너
   renderDataBanner();
@@ -469,7 +483,6 @@ function update(){
   redrawAllCharts();
   updateTable(r,mo);
   updateKPIs();
-  updateCompTab(mo);
   updatePipeline();
 
   const pct=Math.round(cum/TARGET*100);
@@ -499,8 +512,8 @@ function renderDataBanner(){
     return `<div class="db-row">
       <span class="db-name" style="color:${col};">● ${name}</span>
       <div class="db-vals">
-        <span class="db-actual" style="color:${achColor(pct)};">${fmt(d.q1_actual)}만</span>
-        <span class="db-target">/ Q1목표 ${fmt(d.q1_target)}만</span>
+        <span class="db-actual" style="color:${achColor(pct)};">${fmt(d.q1_actual)}</span>
+        <span class="db-target">/ Q1목표 ${fmt(d.q1_target)}</span>
         <span class="ach-pill" style="background:${achBg(pct)};color:${achColor(pct)};">${pct}%</span>
       </div>
     </div>`;
@@ -516,7 +529,7 @@ function renderDataBanner(){
       <div class="db-row" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--bx);">
         <span style="font-weight:600;font-size:11px;">월별 MRR</span>
         <div class="db-vals">
-          ${REAL.monthly_mrr.map(m=>`<span class="ach-pill" style="background:var(--bg2);color:var(--ct);">${m.month}월 ${fmt(m.total_mrr)}만</span>`).join('')}
+          ${REAL.monthly_mrr.map(m=>`<span class="ach-pill" style="background:var(--bg2);color:var(--ct);">${m.month}월 ${fmt(m.total_mrr)}</span>`).join('')}
         </div>
       </div>
     </div>`;
@@ -578,7 +591,7 @@ function updateTable(r,mo){
       <td>${MONTHS[i]}</td>
       <td>${fmt(r.av[i])}</td><td>${fmt(r.vg[i])}</td><td>${fmt(r.ent[i])}</td><td>${fmt(r.vid[i])}</td>
       <td style="color:${C[0]};font-weight:600;">${fmt(t)}</td>
-      <td style="color:${act!==null?'var(--ao)':'var(--cs)'};">${act!==null?fmt(act)+'만':'—'}</td>
+      <td style="color:${act!==null?'var(--ao)':'var(--cs)'};">${act!==null?fmt(act):'—'}</td>
       <td>${ach!==null?`<span class="ach-pill" style="background:${achBg(ach)};color:${achColor(ach)};">${ach}%</span>`:'—'}</td>
       <td style="color:${C[1]};">${fmt(cum)}</td>
     </tr>`;
@@ -592,13 +605,13 @@ function updateCompTab(mo){
   const actMRRs=MONTHS.map((_,i)=>getActualMRR(i));
   const hasAny=actMRRs.some(v=>v!==null);
   let cumSim=0,cumAct=0,cnt=0,achSum=0;
-  actMRRs.forEach((a,i)=>{cumSim+=mo[i];if(a!==null){cumAct+=a;cnt++;achSum+=a/mo[i]*100;}});
+  actMRRs.forEach((a,i)=>{cumSim+=mo[i];if(a!==null){cumAct+=a;if(mo[i]>0){cnt++;achSum+=a/mo[i]*100;}}});
   const avgAch=cnt?achSum/cnt:null;
   const actTgt=cnt?Math.round(cumAct/TARGET*100):null;
   document.getElementById('comp-kpis').innerHTML=`
     <div class="kc"><div class="kc-l">입력된 실적 월수</div><div class="kc-v">${cnt}개월</div></div>
     <div class="kc"><div class="kc-l">평균 달성률 ${ti('gap','')}</div><div class="kc-v" style="color:${avgAch!==null?achColor(avgAch):'var(--cs)'};">${avgAch!==null?avgAch.toFixed(1)+'%':'—'}</div></div>
-    <div class="kc"><div class="kc-l">누적 실적</div><div class="kc-v" style="color:var(--ao);">${cnt?fmt(cumAct)+'만':'—'}</div></div>
+    <div class="kc"><div class="kc-l">누적 실적</div><div class="kc-v" style="color:var(--ao);">${cnt?fmt(cumAct):'—'}</div></div>
     <div class="kc"><div class="kc-l">실적 목표 달성률</div><div class="kc-v" style="color:${actTgt!==null?achColor(actTgt):'var(--cs)'};">${actTgt!==null?actTgt+'%':'—'}</div></div>`;
 
   const simLine=mo.slice(),actLine=actMRRs.map(v=>v);
@@ -614,8 +627,8 @@ function updateCompTab(mo){
       {type:'line',label:'누적 시뮬',data:cumSimArr,borderColor:C[0],borderWidth:1.5,borderDash:[3,3],pointRadius:0,fill:false,yAxisID:'y2',tension:.3},
       {type:'line',label:'누적 실적',data:cumActArr,borderColor:isDark?'#FB923C':'#E05A1E',borderWidth:1.5,pointRadius:0,fill:false,yAxisID:'y2',tension:.3,spanGaps:false}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}만`}}},
-    scales:{x:{grid:{color:gC},ticks:{color:tC,font:{size:10}}},y:{grid:{color:gC},ticks:{color:tC,font:{size:10},callback:v=>fmt(v)+'만'}},y2:{position:'right',grid:{display:false},ticks:{color:'rgba(128,128,128,.4)',font:{size:10},callback:v=>fmt(v)+'만'}}}}
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`}}},
+    scales:{x:{grid:{color:gC},ticks:{color:tC,font:{size:10}}},y:{grid:{color:gC},ticks:{color:tC,font:{size:10},callback:v=>fmt(v)}},y2:{position:'right',grid:{display:false},ticks:{color:'rgba(128,128,128,.4)',font:{size:10},callback:v=>fmt(v)}}}}
   });
 
   // 스트림별 연간 목표 달성
@@ -635,7 +648,7 @@ function updateCompTab(mo){
       <div class="ach-label" style="color:${color};">● ${label}</div>
       <div class="ach-bar-wrap"><div class="ach-bar" style="width:${barW}%;background:${achColor(pct)};"></div></div>
       <span style="font-size:11px;font-weight:600;width:36px;text-align:right;color:${achColor(pct)};">${pct}%</span>
-      <span style="font-size:10px;color:var(--cs);width:90px;text-align:right;">${fmt(d.annual_actual)}만 / ${fmt(d.annual_target)}만</span>
+      <span style="font-size:10px;color:var(--cs);width:90px;text-align:right;">${fmt(d.annual_actual)} / ${fmt(d.annual_target)}</span>
     </div>`;
   }).join('');
 
@@ -656,7 +669,7 @@ function updateKPIs(){
   const la=S.avARPU/acr,lv=S.vgARPU/vcr;
   const lca=S.cacAv>0?la/S.cacAv:0,lcv=S.cacVg>0?lv/S.cacVg:0;
   const pb=(cac,arpu)=>arpu>0?(cac/arpu).toFixed(1)+'개월':'—';
-  const lcc=v=>v>=3?'#00935F':v>=1?'#D97706':'#DC2626';
+  const lcc=v=>v>=5?'#00935F':v>=2?'#D97706':'#DC2626';
   function kc(col,name,rows){return `<div class="kpi-card"><div class="kc-title" style="color:${col};">${name}</div>${rows.map(r=>`<div class="kc-row"><div class="kc-lb">${r[0]}</div><div class="kc-vl" ${r[2]?`style="color:${r[2]};"`:''}>${r[1]}</div></div>`).join('')}</div>`;}
   document.getElementById('kpi-cards').innerHTML=
     kc(C[0],'통합 SaaS',[[ti('cac','CAC'),fmt(S.cacAv)],[ti('ltv','LTV'),fmt(la)],[ti('ltvcac','LTV:CAC'),lca.toFixed(1)+'x',lcc(lca)],[ti('payback','Payback'),pb(S.cacAv,S.avARPU)]])+
@@ -679,17 +692,17 @@ function updatePipeline(){
   REAL.pipeline.forEach(p=>{byStream[p.stream]=(byStream[p.stream]||0)+(p.amount||0);});
   document.getElementById('pipe-summary').innerHTML=`
     <div class="kc"><div class="kc-l">총 딜 건수</div><div class="kc-v">${REAL.pipeline.length}건</div></div>
-    <div class="kc"><div class="kc-l">총 파이프라인 금액</div><div class="kc-v" style="color:var(--ao);">${fmt(totalPipe)}만</div></div>
-    <div class="kc"><div class="kc-l">공공혁신제품</div><div class="kc-v" style="color:#9333EA;">${fmt(byStream['공공혁신제품']||0)}만</div></div>
-    <div class="kc"><div class="kc-l">Enterprise</div><div class="kc-v" style="color:${C[2]};">${fmt(byStream['Enterprise']||0)}만</div></div>
-    <div class="kc" style="grid-column:span 1;"><div class="kc-l">기타</div><div class="kc-v">${fmt((byStream['영상제작대행']||0)+(byStream['디지털명함']||0))}만</div></div>`;
+    <div class="kc"><div class="kc-l">총 파이프라인 금액</div><div class="kc-v" style="color:var(--ao);">${fmt(totalPipe)}</div></div>
+    <div class="kc"><div class="kc-l">공공혁신제품</div><div class="kc-v" style="color:#9333EA;">${fmt(byStream['공공혁신제품']||0)}</div></div>
+    <div class="kc"><div class="kc-l">Enterprise</div><div class="kc-v" style="color:${C[2]};">${fmt(byStream['Enterprise']||0)}</div></div>
+    <div class="kc" style="grid-column:span 1;"><div class="kc-l">기타</div><div class="kc-v">${fmt((byStream['영상제작대행']||0)+(byStream['디지털명함']||0))}</div></div>`;
 
   document.getElementById('pipe-list').innerHTML=REAL.pipeline.map(p=>{
     const col=streamColors[p.stream]||'var(--cs)';
     return `<div class="pipe-row">
       <span class="pipe-stream" style="background:${col}18;color:${col};">${p.stream}</span>
       <div><div class="pipe-client">${p.client}</div><div class="pipe-service">${p.service||''}</div></div>
-      <div class="pipe-amount" style="color:${p.amount?'var(--ct)':'var(--cs)'};">${p.amount?fmt(p.amount)+'만':'협의중'}</div>
+      <div class="pipe-amount" style="color:${p.amount?'var(--ct)':'var(--cs)'};">${p.amount?fmt(p.amount):'협의중'}</div>
     </div>`;
   }).join('');
   document.getElementById('pipe-insight').innerHTML=`<b>🔍 파이프라인 인사이트</b><br>
