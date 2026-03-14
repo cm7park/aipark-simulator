@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIPARK 매출 시뮬레이터</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Noto Sans KR', sans-serif; background: #f5f5f3; color: #1a1a18; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #888; margin-bottom: 1.5rem; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 10px; padding: .85rem 1rem; }
+  .card-sm { background: #f1efe8; border-radius: 8px; padding: .85rem 1rem; }
+  .card-label { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .card-value { font-size: 18px; font-weight: 500; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .tab-btn { font-size: 13px; padding: 6px 14px; border-radius: 20px; border: 0.5px solid #ccc; cursor: pointer; background: #fff; color: #888; transition: all .15s; }
+  .tab-btn.active { color: white; border-color: transparent; }
+  .panel-wrap { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+  .stream-stats { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin-bottom: 1rem; }
+  .stat-card { background: #f8f8f6; border: 0.5px solid #e0dfd8; border-radius: 8px; padding: .75rem 1rem; }
+  .stat-label { font-size: 11px; color: #888; margin-bottom: 3px; }
+  .stat-value { font-size: 16px; font-weight: 500; }
+  .slider-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0 2rem; margin-top: 4px; }
+  .slider-row { margin-bottom: 12px; }
+  .slider-head { display: flex; justify-content: space-between; margin-bottom: 4px; align-items: center; }
+  .slider-label { font-size: 12px; color: #888; }
+  .slider-input-wrap { display: flex; align-items: center; gap: 6px; }
+  input[type=number] { width: 72px; font-size: 12px; font-weight: 500; text-align: right; border: 0.5px solid #ccc; border-radius: 6px; padding: 2px 6px; background: #fff; color: #1a1a18; }
+  .slider-unit { font-size: 12px; color: #888; }
+  input[type=range] { width: 100%; accent-color: #1D9E75; }
+  .slider-minmax { display: flex; justify-content: space-between; margin-top: 2px; }
+  .slider-minmax span { font-size: 10px; color: #bbb; }
+  .chart-wrap { position: relative; width: 100%; height: 280px; margin-bottom: 10px; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: #888; margin-bottom: 1.25rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; }
+  .progress-box { padding: 1rem 1.25rem; border: 0.5px solid #e0dfd8; border-radius: 12px; }
+  .progress-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .progress-label { font-size: 12px; color: #888; }
+  .progress-pct { font-size: 14px; font-weight: 500; }
+  .progress-track { height: 8px; background: #f1efe8; border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: #1D9E75; border-radius: 4px; transition: width .3s; }
+  .progress-note { font-size: 12px; color: #888; margin-top: 8px; }
+  @media(max-width:600px) {
+    .grid4 { grid-template-columns: repeat(2,1fr); }
+    .slider-grid { grid-template-columns: 1fr; }
+    .stream-stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>AIPARK 매출 시뮬레이터</h1>
+  <p class="subtitle">각 스트림의 변수를 조정해 12개월 MRR 및 누적 매출을 시뮬레이션합니다.</p>
+
+  <div class="grid4">
+    <div class="card-sm"><div class="card-label">현재 총 MRR</div><div class="card-value" id="s-now"></div></div>
+    <div class="card-sm"><div class="card-label">12개월 후 MRR</div><div class="card-value" style="color:#1D9E75;" id="s-m12"></div></div>
+    <div class="card-sm"><div class="card-label">12개월 누적 매출</div><div class="card-value" style="color:#185FA5;" id="s-cum"></div></div>
+    <div class="card-sm"><div class="card-label">MRR 성장률</div><div class="card-value" style="color:#534AB7;" id="s-growth"></div></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="panel-wrap">
+    <div class="stream-stats" id="stream-stats"></div>
+    <div id="panel-area"></div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="rev-chart"></canvas></div>
+
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#1D9E75;"></span>통합 SaaS</span>
+    <span><span class="legend-dot" style="background:#185FA5;"></span>V-GEN API</span>
+    <span><span class="legend-dot" style="background:#534AB7;"></span>Enterprise</span>
+    <span><span class="legend-dot" style="background:#BA7517;"></span>영상제작</span>
+  </div>
+
+  <div class="progress-box">
+    <div class="progress-head">
+      <span class="progress-label">2026 연간 목표 달성률 (목표: 10억원)</span>
+      <span class="progress-pct" id="progress-pct"></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-bar"></div></div>
+    <p class="progress-note" id="progress-note"></p>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const state = {
+  avCust:20, avLeads:20, avConv:15, avChurn:5, avARPU:30,
+  vgClients:10, vgNew:2, vgChurn:3, vgARPU:62,
+  entContracts:5, entNewQ:1, entAvg:2000,
+  vidVol:30, vidGrowth:2, vidPrice:55
+};
+const COLORS = ['#1D9E75','#185FA5','#534AB7','#BA7517'];
+const TABS = [{label:'통합 SaaS',color:COLORS[0]},{label:'V-GEN API',color:COLORS[1]},{label:'Enterprise',color:COLORS[2]},{label:'영상제작',color:COLORS[3]}];
+const PANELS = [
+  [{k:'avCust',label:'현재 유료 고객',min:0,max:5000,step:10,unit:'명'},{k:'avLeads',label:'월 신규 리드',min:0,max:3000,step:10,unit:'건'},{k:'avConv',label:'전환율 (무료→유료)',min:0,max:100,step:1,unit:'%'},{k:'avChurn',label:'월 이탈률',min:0,max:50,step:1,unit:'%'},{k:'avARPU',label:'ARPU (월)',min:10,max:2000,step:10,unit:'만원'}],
+  [{k:'vgClients',label:'현재 API 클라이언트',min:0,max:1000,step:5,unit:'사'},{k:'vgNew',label:'월 신규 클라이언트',min:0,max:200,step:1,unit:'사'},{k:'vgChurn',label:'월 이탈률',min:0,max:50,step:1,unit:'%'},{k:'vgARPU',label:'ARPU (월)',min:10,max:5000,step:50,unit:'만원'}],
+  [{k:'entContracts',label:'현재 계약 건수',min:0,max:200,step:1,unit:'건'},{k:'entNewQ',label:'분기 신규 계약',min:0,max:50,step:1,unit:'건'},{k:'entAvg',label:'평균 계약금액',min:500,max:50000,step:500,unit:'만원'}],
+  [{k:'vidVol',label:'현재 월 제작편수',min:0,max:1000,step:5,unit:'편'},{k:'vidGrowth',label:'월 증가편수',min:0,max:100,step:1,unit:'편'},{k:'vidPrice',label:'편당 단가',min:20,max:1000,step:10,unit:'만원'}]
+];
+const TARGET = 100000;
+let activeTab=0, chart;
+
+function fmt(w){if(w>=10000)return(w/10000).toFixed(1)+'억원';if(w>=1000)return(w/1000).toFixed(1)+'천만원';return Math.round(w).toLocaleString()+'만원';}
+function streamMRR(s){return[s.avCust*s.avARPU,s.vgClients*s.vgARPU,s.entContracts*s.entAvg/12,s.vidVol*s.vidPrice];}
+function simulate(){
+  const av=[],vg=[],ent=[],vid=[];
+  let ac=state.avCust,vc=state.vgClients,ec=state.entContracts,vv=state.vidVol;
+  for(let m=1;m<=12;m++){
+    ac=ac*(1-state.avChurn/100)+state.avLeads*(state.avConv/100);av.push(+(ac*state.avARPU).toFixed(0));
+    vc=vc*(1-state.vgChurn/100)+state.vgNew;vg.push(+(vc*state.vgARPU).toFixed(0));
+    if(m%3===0)ec+=state.entNewQ;ent.push(+(ec*state.entAvg/12).toFixed(0));
+    vv+=state.vidGrowth;vid.push(+(vv*state.vidPrice).toFixed(0));
+  }
+  return{av,vg,ent,vid};
+}
+function renderStreamStats(tab){
+  const mrrs=streamMRR(state),total=mrrs.reduce((s,v)=>s+v,0);
+  const{av,vg,ent,vid}=simulate();
+  const m12arr=[av[11],vg[11],ent[11],vid[11]];
+  const color=COLORS[tab],nowV=mrrs[tab],m12V=m12arr[tab],share=total>0?Math.round(nowV/total*100):0;
+  document.getElementById('stream-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-label">현재 MRR</div><div class="stat-value" style="color:${color};">${fmt(nowV)}</div></div>
+    <div class="stat-card"><div class="stat-label">12개월 후 MRR</div><div class="stat-value" style="color:${color};">${fmt(m12V)}</div></div>
+    <div class="stat-card"><div class="stat-label">현재 매출 비중</div><div class="stat-value" style="color:${color};">${share}%</div>
+      <div style="height:4px;background:#e0dfd8;border-radius:2px;margin-top:6px;overflow:hidden;"><div style="height:100%;width:${share}%;background:${color};border-radius:2px;"></div></div>
+    </div>`;
+}
+function update(){
+  const{av,vg,ent,vid}=simulate(),mrrs=streamMRR(state);
+  const now=mrrs.reduce((s,v)=>s+v,0),m12=av[11]+vg[11]+ent[11]+vid[11];
+  let cum=0;for(let i=0;i<12;i++)cum+=av[i]+vg[i]+ent[i]+vid[i];
+  const g=now>0?Math.round((m12/now-1)*100):0;
+  document.getElementById('s-now').textContent=fmt(now);
+  document.getElementById('s-m12').textContent=fmt(m12);
+  document.getElementById('s-cum').textContent=fmt(cum);
+  document.getElementById('s-growth').textContent=(g>0?'+':'')+g+'%';
+  renderStreamStats(activeTab);
+  const pct=Math.round(cum/TARGET*100);
+  document.getElementById('progress-bar').style.width=Math.min(pct,100)+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  const gap=cum-TARGET;
+  document.getElementById('progress-note').textContent=`누적 ${fmt(cum)} / 목표 10억원 — ${gap>=0?'목표 초과 '+fmt(gap):'잔여 '+fmt(-gap)}`;
+  const labels=Array.from({length:12},(_,i)=>(i+1)+'개월');
+  if(chart)chart.destroy();
+  chart=new Chart(document.getElementById('rev-chart').getContext('2d'),{
+    type:'bar',data:{labels,datasets:[
+      {label:'통합 SaaS',data:av,backgroundColor:COLORS[0],stack:'s'},
+      {label:'V-GEN API',data:vg,backgroundColor:COLORS[1],stack:'s'},
+      {label:'Enterprise',data:ent,backgroundColor:COLORS[2],stack:'s'},
+      {label:'영상제작',data:vid,backgroundColor:COLORS[3],stack:'s'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${fmt(c.raw)}`,footer:items=>`합계: ${fmt(items.reduce((s,i)=>s+i.raw,0))}`}}},
+    scales:{x:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#aaa',font:{size:11}}},y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{color:'#aaa',font:{size:11},callback:v=>fmt(v)}}}}
+  });
+}
+function makeSlider(d){
+  const v=state[d.k];
+  return `<div class="slider-row">
+    <div class="slider-head">
+      <label class="slider-label">${d.label}</label>
+      <div class="slider-input-wrap">
+        <input type="number" id="num-${d.k}" value="${v}" min="${d.min}" max="${d.max}" step="${d.step}" oninput="syncFromNum('${d.k}',${d.min},${d.max})">
+        <span class="slider-unit">${d.unit}</span>
+      </div>
+    </div>
+    <input type="range" id="rng-${d.k}" min="${d.min}" max="${d.max}" step="${d.step}" value="${v}" oninput="syncFromRange('${d.k}')">
+    <div class="slider-minmax"><span>${d.min.toLocaleString()}${d.unit}</span><span>${d.max.toLocaleString()}${d.unit}</span></div>
+  </div>`;
+}
+function syncFromRange(k){const v=+document.getElementById('rng-'+k).value;document.getElementById('num-'+k).value=v;state[k]=v;update();}
+function syncFromNum(k,mn,mx){let v=+document.getElementById('num-'+k).value;v=Math.max(mn,Math.min(mx,v));document.getElementById('rng-'+k).value=v;state[k]=v;update();}
+function renderTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map((t,i)=>`
+    <button class="tab-btn${i===activeTab?' active':''}" style="${i===activeTab?'background:'+t.color+';':''}" onclick="setTab(${i})">${t.label}</button>`).join('');
+}
+function renderPanel(){
+  document.getElementById('panel-area').innerHTML=`<div class="slider-grid">${PANELS[activeTab].map(makeSlider).join('')}</div>`;
+}
+function setTab(i){activeTab=i;renderTabs();renderPanel();renderStreamStats(i);}
+renderTabs();renderPanel();update();
+</script>
+</body>
+</html>
