@@ -370,7 +370,7 @@ let REAL = {
     {stream:'디지털명함', client:'KB손해보험', amount:0, service:'(협의 중)'},
   ],
   last_sync: '2026-03-14 (엑셀 파일 기준)',
-  gs_webapp_url: 'https://script.google.com/macros/s/AKfycbzCN2bnzB0aaXHQF8AWTotyzfOBXLXb3fJjjDHOsHQJiFyzAMpLZc3VDfqSqYZd18CQ/exec' // GS 웹앱 배포 후 여기에 URL 입력
+  gs_webapp_url: 'https://script.google.com/macros/s/AKfycbxshP5lVYloXC4RINlAijY8ZGblt4rUIikuR4OU2nxnfTJyXPIlamsPjz0fJFvdtnfX/exec' // GS 웹앱 배포 후 여기에 URL 입력
 };
 
 // ── SIM STATE ─────────────────────────────────────────────────────────────
@@ -783,9 +783,9 @@ async function syncFromSheets(){
   const icon=document.getElementById('sync-icon');
   btn.classList.add('loading');icon.textContent='⏳';
   try{
-    const res=await fetch(url+'?callback=_');
-    const text=await res.text();
-    const json=JSON.parse(text.replace(/^_\(/,'').replace(/\)$/,''));
+    const res=await fetch(url,{method:'GET',mode:'cors'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const json=await res.json();
     if(json.monthly_mrr) REAL.monthly_mrr=json.monthly_mrr;
     if(json.streams) Object.assign(REAL.streams,json.streams);
     if(json.pipeline) REAL.pipeline=json.pipeline;
@@ -793,7 +793,11 @@ async function syncFromSheets(){
     update();
     showSyncStatus('ok',`✅ 동기화 완료 — ${REAL.last_sync}`);
   }catch(e){
-    showSyncStatus('error','❌ 동기화 실패: '+e.message+' — GS 웹앱 URL과 CORS 설정을 확인하세요.');
+    const errMsg = e.message.includes('Failed to fetch')
+      ? '❌ CORS 오류 — GS 웹앱 재배포 필요. Apps Script에서 [배포 → 새 배포 → 웹앱 → 모든 사용자]로 설정하세요.'
+      : '❌ 동기화 실패: '+e.message;
+    showSyncStatus('error', errMsg);
+    REAL.gs_webapp_url = '';  // URL 초기화 (다음 클릭 시 재입력)
   }finally{
     btn.classList.remove('loading');icon.textContent='🔄';
   }
