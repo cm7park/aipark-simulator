@@ -157,7 +157,7 @@ tr.tr-actual td{background:rgba(0,150,100,.04);}
     <div><div class="logo-title">Revenue Simulator 2026</div><div class="logo-sub">실적 연동 · 내부 전략 검토용</div></div>
   </div>
   <div class="hdr-right">
-    <button class="sync-btn" id="sync-btn" onclick="syncFromSheets()">
+    <button class="sync-btn" id="sync-btn" onclick="syncFromSheets()" title="GS 웹앱 URL 미설정 — 하단 안내 참고">
       <span id="sync-icon">🔄</span> GS 실적 동기화
     </button>
     <button class="theme-btn" onclick="toggleTheme()">
@@ -370,7 +370,7 @@ let REAL = {
     {stream:'디지털명함', client:'KB손해보험', amount:0, service:'(협의 중)'},
   ],
   last_sync: '2026-03-14 (엑셀 파일 기준)',
-  gs_webapp_url: 'https://script.google.com/a/macros/aipark.ai/s/AKfycbziNhNW3z5EQZ9Pd1YvG-qw7xyYeCHDysdf-nqbumucACwOboXWLu7OceX6TdHaCDBA/exec' // GS 웹앱 배포 후 여기에 URL 입력
+  gs_webapp_url: '' // GS 웹앱 배포 후 여기에 URL 입력
 };
 
 // ── SIM STATE ─────────────────────────────────────────────────────────────
@@ -763,10 +763,21 @@ function showCompare(){
 
 // ── GOOGLE SHEETS SYNC ────────────────────────────────────────────────────
 async function syncFromSheets(){
-  const url = REAL.gs_webapp_url;
+  let url = REAL.gs_webapp_url;
   if(!url){
-    showSyncStatus('error','GS 웹앱 URL이 설정되지 않았습니다. HTML 파일의 gs_webapp_url을 채워주세요.');
-    return;
+    // URL 입력 팝업
+    const entered = prompt(
+      'GS 웹앱 URL을 입력하세요.\n\n' +
+      '설정 방법:\n' +
+      '1. 매출목표 구글시트 → 확장 프로그램 → Apps Script\n' +
+      '2. SimulatorAPI.gs 파일 붙여넣기 후 저장\n' +
+      '3. 배포 → 새 배포 → 웹 앱 → 액세스: 모든 사용자\n' +
+      '4. 배포 URL 복사 후 여기에 붙여넣기',
+      ''
+    );
+    if(!entered || !entered.trim()){return;}
+    REAL.gs_webapp_url = entered.trim();
+    url = REAL.gs_webapp_url;
   }
   const btn=document.getElementById('sync-btn');
   const icon=document.getElementById('sync-icon');
