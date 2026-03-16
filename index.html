@@ -18,6 +18,8 @@ body{background:#e8eaed;padding:1rem;font-family:'Pretendard',system-ui,sans-ser
 .logo-title{font-size:15px;font-weight:600;color:var(--ct);}
 .logo-sub{font-size:12px;color:var(--cs);margin-top:1px;}
 .hdr-right{display:flex;align-items:center;gap:8px;}
+.ir-btn{font-size:12px;font-weight:600;padding:5px 13px;border-radius:8px;border:1px solid rgba(0,200,120,.4);background:rgba(0,200,120,.08);color:var(--ca);cursor:pointer;font-family:inherit;transition:all .2s;margin-right:4px;}
+.ir-btn:hover{background:rgba(0,200,120,.18);}
 .sync-btn{display:flex;align-items:center;gap:5px;font-size:14px;padding:5px 12px;border-radius:8px;border:1px solid var(--bx);background:var(--bg2);color:var(--cs);cursor:pointer;font-family:inherit;transition:all .2s;}
 .sync-btn:hover{border-color:var(--acc);color:var(--acc);}
 .sync-btn.loading{opacity:.6;pointer-events:none;}
@@ -138,6 +140,52 @@ tr.tr-actual td{background:rgba(0,150,100,.04);}
 .btn:hover{border-color:var(--acc);color:var(--acc);}
 .scen-tag{font-size:13px;color:var(--ca);}
 @media(max-width:640px){.krow5,.c2col,.comp-kpis{grid-template-columns:repeat(2,1fr);}.slg,.data-banner{grid-template-columns:1fr;}.pipe-row{grid-template-columns:1fr 1fr;}}
+
+/* ── IR 모달 ── */
+#ir-modal{position:fixed;inset:0;z-index:9000;display:none;overflow-y:auto;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);}
+#ir-modal.show{display:block;}
+#ir-panel{min-height:100vh;padding:28px 40px 44px;background:#0A0F1E;color:#F1F5F9;font-family:'Pretendard',system-ui,sans-serif;animation:irIn .25s ease;}
+@keyframes irIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.ir-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.ir-hdr-left{display:flex;align-items:center;gap:14px;}
+.ir-logo{height:22px;}
+.ir-title h2{font-size:19px;font-weight:700;letter-spacing:-.3px;}
+.ir-title p{font-size:11px;color:#64748B;margin-top:2px;}
+.ir-close{font-size:12px;padding:6px 13px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:#94A3B8;cursor:pointer;font-family:inherit;transition:all .15s;}
+.ir-close:hover{background:rgba(255,255,255,.07);}
+.ir-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+.ir-kc{background:#111827;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:13px 15px;position:relative;overflow:hidden;}
+.ir-kc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--irc,#00E5B0);}
+.ir-kc-label{font-size:10px;color:#64748B;font-weight:600;margin-bottom:6px;letter-spacing:.3px;}
+.ir-kc-val{font-size:19px;font-weight:700;color:var(--irc,#F1F5F9);letter-spacing:-.3px;}
+.ir-kc-sub{font-size:10px;color:#64748B;margin-top:4px;}
+.ir-kc-badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;margin-top:5px;}
+.ir-grid-3{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;margin-bottom:14px;}
+.ir-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ir-card{background:#111827;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:16px 18px;}
+.ir-card-title{font-size:10px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.9px;margin-bottom:12px;}
+.ir-stream-row{display:flex;align-items:center;gap:7px;margin-bottom:8px;font-size:11px;}
+.ir-stream-name{width:82px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ir-bar-track{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.ir-bar-fill{height:100%;border-radius:2px;transition:width .5s;}
+.ir-pct{width:32px;text-align:right;font-weight:700;font-size:11px;flex-shrink:0;}
+.ir-amt{width:68px;text-align:right;color:#64748B;font-size:10px;flex-shrink:0;}
+.ir-unit-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.ir-unit{background:rgba(255,255,255,.03);border-radius:7px;padding:10px 12px;}
+.ir-unit-label{font-size:10px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.ir-unit-val{font-size:17px;font-weight:700;}
+.ir-unit-sub{font-size:10px;color:#64748B;margin-top:2px;}
+.ir-pipe-item{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px;}
+.ir-pipe-item:last-child{border-bottom:none;}
+.ir-pipe-tag{padding:2px 6px;border-radius:4px;font-size:9px;font-weight:700;margin-right:6px;flex-shrink:0;}
+.ir-pipe-client{flex:1;}
+.ir-pipe-svc{font-size:10px;color:#64748B;}
+.ir-pipe-amt{font-weight:700;flex-shrink:0;margin-left:8px;}
+.ir-goal-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;}
+.ir-goal-track{height:5px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;margin-bottom:12px;}
+.ir-goal-fill{height:100%;border-radius:3px;transition:width .5s;}
+.ir-footer{margin-top:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;font-size:10px;color:#475569;}
+@media(max-width:820px){.ir-kpi-row{grid-template-columns:repeat(3,1fr);}.ir-grid-3,.ir-grid-2{grid-template-columns:1fr;}#ir-panel{padding:18px 16px 32px;}}
 </style>
 </head>
 <body>
@@ -157,6 +205,7 @@ tr.tr-actual td{background:rgba(0,150,100,.04);}
     <div><div class="logo-title">Revenue Simulator 2026</div><div class="logo-sub">실적 연동 · 내부 전략 검토용</div></div>
   </div>
   <div class="hdr-right">
+    <button class="ir-btn" onclick="openIR()" title="투자자용 IR 요약">📊 IR 보기</button>
     <button class="sync-btn" id="sync-btn" onclick="syncFromSheets()" title="GS 웹앱 URL 미설정 — 하단 안내 참고">
       <span id="sync-icon">🔄</span> GS 실적 동기화
     </button>
@@ -814,5 +863,258 @@ renderNav();renderSTabs();renderSPanel();
 document.getElementById('sl-cost').innerHTML=CF.map(mkSlider).join('');
 document.getElementById('sl-cac').innerHTML=CACF.map(mkSlider).join('');
 update();
+
+// ── IR 모달 ────────────────────────────────────────────────────────────────
+let irMrrChart = null;
+
+function openIR(){
+  document.getElementById('ir-modal').classList.add('show');
+  document.body.style.overflow='hidden';
+  // 로고 (다크 배경이므로 다크 로고)
+  document.getElementById('ir-logo').src = LOGO_DARK;
+  document.getElementById('ir-date').textContent =
+    new Intl.DateTimeFormat('ko-KR',{year:'numeric',month:'long',day:'numeric'}).format(new Date());
+  document.getElementById('ir-sync-label').textContent = '동기화: ' + REAL.last_sync;
+  renderIR();
+}
+
+function closeIR(){
+  document.getElementById('ir-modal').classList.remove('show');
+  document.body.style.overflow='';
+}
+
+// ESC로 닫기
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeIR();});
+
+function irFmt(w){
+  if(w===null||w===undefined||isNaN(w))return'—';
+  if(w>=10000) return (w/10000).toFixed(1)+'억원';
+  return Math.round(w).toLocaleString()+'만원';
+}
+function irAchColor(p){return p>=100?'#00E5B0':p>=70?'#F59E0B':'#F87171';}
+function irAchBg(p){return p>=100?'rgba(0,229,176,.15)':p>=70?'rgba(245,158,11,.15)':'rgba(248,113,113,.15)';}
+
+function renderIR(){
+  irRenderKPIs();
+  irRenderMRR();
+  irRenderStreams();
+  irRenderUnits();
+  irRenderPipeline();
+  irRenderGoal();
+}
+
+function irRenderKPIs(){
+  const totalActual = Object.values(REAL.streams).reduce((s,d)=>s+(d.annual_actual||0),0);
+  const latestMRR = REAL.monthly_mrr.length ? REAL.monthly_mrr[REAL.monthly_mrr.length-1].total_mrr : 0;
+  const totalPipe = REAL.pipeline.reduce((s,p)=>s+(p.amount||0),0);
+  const TARGET = 150000;
+  const actPct = Math.round(totalActual/TARGET*100);
+
+  // MoM 성장률
+  let mom = null;
+  if(REAL.monthly_mrr.length>=2){
+    const a=REAL.monthly_mrr[REAL.monthly_mrr.length-1].total_mrr;
+    const b=REAL.monthly_mrr[REAL.monthly_mrr.length-2].total_mrr;
+    mom = b>0?Math.round((a/b-1)*100):null;
+  }
+
+  // 시뮬 LTV:CAC
+  const acr=S.avChurn/100||.001;
+  const ltv=S.avARPU/acr;
+  const ltvCac = S.cacAv>0?(ltv/S.cacAv).toFixed(1):'—';
+
+  const kpis=[
+    {label:'현재 MRR', val:irFmt(latestMRR), sub:'ARR '+irFmt(latestMRR*12), color:'#00E5B0', badge:null},
+    {label:'누적 실적 매출', val:irFmt(totalActual), sub:'연간목표 '+irFmt(TARGET),
+     color:'#3B82F6', badge:{text:actPct+'%', bg:irAchBg(actPct), color:irAchColor(actPct)}},
+    {label:'파이프라인', val:irFmt(totalPipe), sub:REAL.pipeline.filter(p=>p.amount>0).length+'건 진행 중', color:'#F59E0B', badge:null},
+    {label:'MRR 성장률 (MoM)', val:mom!==null?(mom>0?'+':'')+mom+'%':'—', sub:'전월 대비',
+     color:mom>0?'#00E5B0':'#F87171', badge:null},
+    {label:'SaaS LTV:CAC', val:ltvCac+'x', sub:'기준 3x 이상 ✅', color:'#A78BFA', badge:null},
+  ];
+
+  document.getElementById('ir-kpis').innerHTML=kpis.map(k=>`
+    <div class="ir-kc" style="--irc:${k.color}">
+      <div class="ir-kc-label">${k.label}</div>
+      <div class="ir-kc-val">${k.val}</div>
+      ${k.sub?`<div class="ir-kc-sub">${k.sub}</div>`:''}
+      ${k.badge?`<span class="ir-kc-badge" style="background:${k.badge.bg};color:${k.badge.color}">${k.badge.text}</span>`:''}
+    </div>
+  `).join('');
+}
+
+function irRenderMRR(){
+  const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const actData=MONTHS.map((_,i)=>{const d=REAL.monthly_mrr.find(r=>r.month===i+1);return d?d.total_mrr:null;});
+  const lastIdx=actData.reduce((li,v,i)=>v!==null?i:li,-1);
+
+  // 시뮬 데이터 (lastSim 활용)
+  const simData=MONTHS.map((_,i)=>{
+    if(lastSim){
+      const val=(lastSim.av[i]||0)+(lastSim.vg[i]||0)+(lastSim.ent[i]||0)+(lastSim.vid[i]||0);
+      return val;
+    }
+    return null;
+  });
+
+  const ctx=document.getElementById('ir-mrr-c').getContext('2d');
+  if(irMrrChart) irMrrChart.destroy();
+  irMrrChart=new Chart(ctx,{
+    data:{labels:MONTHS,datasets:[
+      {type:'bar',label:'실적 MRR',data:actData,backgroundColor:'rgba(0,229,176,.2)',borderColor:'#00E5B0',borderWidth:1.5,borderRadius:3},
+      {type:'line',label:'시뮬 예측',data:simData,borderColor:'rgba(59,130,246,.8)',borderWidth:2,borderDash:[4,3],pointRadius:2,fill:false,tension:.3},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+irFmt(c.raw)}}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#475569',font:{size:9}}},
+        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#475569',font:{size:9},callback:v=>irFmt(v)}}
+      }
+    }
+  });
+}
+
+function irRenderStreams(){
+  const defs=[
+    {key:'public',  name:'공공혁신제품', color:'#A78BFA'},
+    {key:'ent',     name:'Enterprise',   color:'#3B82F6'},
+    {key:'custom',  name:'커스텀아바타', color:'#0EA5E9'},
+    {key:'vgen',    name:'V-GEN API',    color:'#00E5B0'},
+    {key:'vid',     name:'영상제작대행', color:'#F59E0B'},
+    {key:'saas',    name:'통합 SaaS',    color:'#6EE7B7'},
+    {key:'bizcard', name:'디지털명함',   color:'#F472B6'},
+  ];
+  document.getElementById('ir-streams').innerHTML=defs.map(d=>{
+    const s=REAL.streams[d.key];
+    const raw=s.annual_target?Math.round(s.annual_actual/s.annual_target*100):0;
+    const bar=Math.min(raw,100);
+    return `<div class="ir-stream-row">
+      <div class="ir-stream-name" style="color:${d.color}">● ${d.name}</div>
+      <div class="ir-bar-track"><div class="ir-bar-fill" style="width:${bar}%;background:${irAchColor(raw)}"></div></div>
+      <div class="ir-pct" style="color:${irAchColor(raw)}">${raw}%</div>
+      <div class="ir-amt">${irFmt(s.annual_actual)}</div>
+    </div>`;
+  }).join('');
+}
+
+function irRenderUnits(){
+  const acr=S.avChurn/100||.001;
+  const ltv=S.avARPU/acr;
+  const ltvCac=S.cacAv>0?ltv/S.cacAv:0;
+  const payback=S.cacAv>0&&S.avARPU>0?(S.cacAv/S.avARPU).toFixed(1):'-';
+  const items=[
+    {label:'SaaS LTV', val:irFmt(ltv), sub:'이탈률 '+S.avChurn+'% 기준', color:'#00E5B0'},
+    {label:'SaaS CAC', val:irFmt(S.cacAv), sub:'고객 획득 비용', color:'#3B82F6'},
+    {label:'LTV : CAC', val:ltvCac.toFixed(1)+'x', sub:ltvCac>=3?'건전 (기준 3x↑) ✅':'개선 필요', color:ltvCac>=3?'#A78BFA':'#F59E0B'},
+    {label:'Payback', val:payback+'개월', sub:'투자 회수 기간', color:'#F59E0B'},
+  ];
+  document.getElementById('ir-units').innerHTML=items.map(it=>`
+    <div class="ir-unit">
+      <div class="ir-unit-label">${it.label}</div>
+      <div class="ir-unit-val" style="color:${it.color}">${it.val}</div>
+      <div class="ir-unit-sub">${it.sub}</div>
+    </div>
+  `).join('');
+}
+
+function irRenderPipeline(){
+  const streamColor={'공공혁신제품':'#A78BFA','Enterprise':'#3B82F6','영상제작대행':'#F59E0B','커스텀아바타':'#0EA5E9','디지털명함':'#F472B6','V-GEN API':'#00E5B0'};
+  const sorted=[...REAL.pipeline].filter(p=>p.amount>0).sort((a,b)=>b.amount-a.amount);
+  const totalPipe=REAL.pipeline.reduce((s,p)=>s+(p.amount||0),0);
+  document.getElementById('ir-pipeline').innerHTML=sorted.slice(0,7).map(p=>{
+    const col=streamColor[p.stream]||'#64748B';
+    return `<div class="ir-pipe-item">
+      <span class="ir-pipe-tag" style="color:${col};border:1px solid ${col}40;background:${col}12">${p.stream.substring(0,5)}</span>
+      <div><div class="ir-pipe-client">${p.client}</div><div class="ir-pipe-svc">${p.service||''}</div></div>
+      <div class="ir-pipe-amt">${irFmt(p.amount)}</div>
+    </div>`;
+  }).join('')+`<div style="margin-top:10px;font-size:10px;color:#64748B;text-align:right;">총 ${REAL.pipeline.filter(p=>p.amount>0).length}건 · 합계 ${irFmt(totalPipe)}</div>`;
+}
+
+function irRenderGoal(){
+  const totalActual=Object.values(REAL.streams).reduce((s,d)=>s+(d.annual_actual||0),0);
+  const totalPipe=REAL.pipeline.reduce((s,p)=>s+(p.amount||0),0);
+  const BASE=100000, STRETCH=150000;
+  const bp=Math.min(Math.round(totalActual/BASE*100),100);
+  const sp=Math.min(Math.round(totalActual/STRETCH*100),100);
+  document.getElementById('ir-goal').innerHTML=`
+    <div class="ir-goal-row">
+      <span style="color:#64748B">Base <span style="color:#F1F5F9;font-weight:600">10억원</span></span>
+      <span style="font-weight:700;color:${irAchColor(bp)}">${bp}%</span>
+    </div>
+    <div class="ir-goal-track"><div class="ir-goal-fill" style="width:${bp}%;background:linear-gradient(90deg,#00E5B0,#3BFFE0)"></div></div>
+    <div class="ir-goal-row">
+      <span style="color:#64748B">Stretch <span style="color:#F1F5F9;font-weight:600">15억원</span></span>
+      <span style="font-weight:700;color:${irAchColor(sp)}">${sp}%</span>
+    </div>
+    <div class="ir-goal-track"><div class="ir-goal-fill" style="width:${sp}%;background:rgba(245,158,11,.7)"></div></div>
+    <div style="margin-top:12px;background:rgba(255,255,255,.03);border-radius:7px;padding:10px 13px;">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px;">
+        <span style="color:#64748B">현재 누적 실적</span>
+        <span style="font-weight:700;color:#00E5B0">${irFmt(totalActual)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;">
+        <span style="color:#64748B">파이프라인 포함 예상</span>
+        <span style="font-weight:700;color:#F59E0B">${irFmt(totalActual+totalPipe)}</span>
+      </div>
+    </div>
+  `;
+}
 </script>
+
+<!-- ── IR 모달 ── -->
+<div id="ir-modal">
+  <div id="ir-panel">
+    <div class="ir-hdr">
+      <div class="ir-hdr-left">
+        <img class="ir-logo" id="ir-logo" src="" alt="AIPARK">
+        <div class="ir-title">
+          <h2>Investor Summary <span id="ir-year" style="color:#00E5B0">2026</span></h2>
+          <p id="ir-tagline">AI Video Operations Infrastructure · CES 2026 Innovation Award</p>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:10px;color:#64748B;" id="ir-sync-label"></span>
+        <button class="ir-close" onclick="closeIR()">✕ 닫기</button>
+      </div>
+    </div>
+
+    <!-- KPI 5종 -->
+    <div class="ir-kpi-row" id="ir-kpis"></div>
+
+    <!-- 메인 3단 -->
+    <div class="ir-grid-3">
+      <div class="ir-card">
+        <div class="ir-card-title">📈 MRR 추이 (실적 + 예측)</div>
+        <div style="position:relative;height:155px;"><canvas id="ir-mrr-c"></canvas></div>
+      </div>
+      <div class="ir-card">
+        <div class="ir-card-title">🎯 스트림별 달성률 (YTD)</div>
+        <div id="ir-streams"></div>
+      </div>
+      <div class="ir-card">
+        <div class="ir-card-title">📐 Unit Economics</div>
+        <div class="ir-unit-grid" id="ir-units"></div>
+      </div>
+    </div>
+
+    <!-- 하단 2단 -->
+    <div class="ir-grid-2">
+      <div class="ir-card">
+        <div class="ir-card-title">🔭 파이프라인 주요 딜</div>
+        <div id="ir-pipeline"></div>
+      </div>
+      <div class="ir-card">
+        <div class="ir-card-title">🏆 2026 연간 목표 달성</div>
+        <div id="ir-goal"></div>
+      </div>
+    </div>
+
+    <div class="ir-footer">
+      <span>AIPARK Co., Ltd. · 주식회사 에이아이파크 · AiVATAR &amp; V-GEN</span>
+      <span id="ir-date"></span>
+    </div>
+  </div>
+</div>
 </body></html>
